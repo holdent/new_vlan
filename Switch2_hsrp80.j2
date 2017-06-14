@@ -1,0 +1,71 @@
+{# ****************Config for Switch 2 (hsrp priority 80) is below********************** #}
+
+vrf context {{vlanname}}
+  ip route 0.0.0.0/0 {{IC_Prefix | ipaddr(-2)}} name {{vlanname}}_IC 
+  address-family ipv4 unicast
+    route-target import 65507:26008{{IC_VLAN_ID}}
+    route-target import 65507:260081501
+    route-target export 65507:26008{{IC_VLAN_ID}}
+    
+vrf context BACKUP_NET
+ address-family ipv4 unicast
+  route-target import 65507:26008{{IC_VLAN_ID}}
+
+vlan {{IC_VLAN_ID}}
+  name {{vlanname}}{{IC_Prefix}}
+  mode fabricpath
+
+vlan {{vlan_id}}
+  name {{vlanname}}{{Prefix}}
+  mode fabricpath
+
+
+interface Vlan{{IC_VLAN_ID}}
+  description {{vlanname}}{{IC_Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{IC_Prefix | ipaddr(3)}}
+  hsrp version 2
+  hsrp {{IC_VLAN_ID}} 
+    name {{vlanname}}_IC_HSRP
+    preempt 
+    priority 100
+    ip {{IC_Prefix | ipaddr(1)}}
+
+interface Vlan{{vlan_id}}
+  description {{vlanname}}{{Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{Prefix | ipaddr(3)}}
+  hsrp version 2
+  hsrp {{vlan_id}}
+    name {{Prefix | ipaddr(1)}}_name
+    preempt 
+    priority 100
+    ip {{Prefix | ipaddr(1)}}
+
+interface port-channel11
+  switchport trunk allowed vlan add {{vlan_id}}
+
+interface port-channel12
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel20
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel21
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel22
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel23
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+router bgp 65507
+
+ vrf {{vlanname}}
+    address-family ipv4 unicast
+

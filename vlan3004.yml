@@ -1,0 +1,17 @@
+---
+# IC_Prefix will be the IC subnet/cidr ie... 10.232.98.0/28
+# IC_VLAN_ID will be the vland id for the IC  ie...1022
+# Prefix will be the Host subnet/cidr ie...  10.232.200.0/24
+# vlan_id will be the Host vlan id ie... 3004
+# vlanname will be the vlan name ie... PROD_TEST1
+#
+# Save your file with the vlan_id in the file name ie...  vlan3004
+#
+# When running the RenderVlan.yml run with the variable vlan_id  ie...     RenderVlan.yml 3004
+#
+IC_Prefix: 10.232.65.0/28
+IC_VLAN_ID: 1004
+Prefix: 10.232.164.0/24
+vlan_id: 3004
+vlanname: PRD_TEST1
+CRQ: 269304

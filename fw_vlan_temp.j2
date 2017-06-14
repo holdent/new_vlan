@@ -1,0 +1,271 @@
+{# **********DMZ Firewall Portion Below*************** #}
+
+
+interace Port-channel7.{{IC_VLAN_ID}}
+ description FW IC to {{vlanname}}{{IC_Prefix}}
+ vlan {{IC_VLAN_ID}}
+ nameif {{vlanname}}_IC 
+ security-level 100
+ ip address {{IC_Prefix | ipaddr(-2)}} 255.255.255.240 secondary {{IC_Prefix | ipaddr(-3)}}
+
+object-group network {{vlanname}}{{Prefix}}
+ subnet {{Prefix | ipaddr('address')}} {{Prefix | ipaddr('netmask')}}
+ description {{CRQ}}
+
+route {{vlanname}}_IC  {{Prefix | ipaddr('address')}} {{Prefix | ipaddr('netmask')}} {{IC_Prefix | ipaddr(1)}}
+
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit icmp object {{vlanname}}{{Prefix}} object-group PING_Global_Networks 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group GIS-Network-Mgmt-Nets_SVCS object {{vlanname}}{{Prefix}} object-group GIS-Network-Mgmt-Nets 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group Tripwire_Servers object-group Tripwire_in 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit ip object {{vlanname}}{{Prefix}} object LUMETA_SENSOR 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit udp object {{vlanname}}{{Prefix}} object-group Security_Syslog_Servers eq syslog 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object TCP_1688 object {{vlanname}}{{Prefix}} object-group DM_INLINE_NETWORK_422 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group MTL-BMC-Patrol-OUT object {{vlanname}}{{Prefix}} object-group MTL-BMC-Patrol 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group DM_INLINE_SERVICE_337 object {{vlanname}}{{Prefix}} object-group DM_INLINE_NETWORK_423 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group MSS-ePO-AV object-group MSS-ePO-AV-OUT 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group DM_INLINE_NETWORK_424 object-group Symantec 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group Satellite_SVCS object {{vlanname}}{{Prefix}} object 10.232.80.8 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group Websense_Servers object-group PAC_FILE 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group HIDS_MONITOR object {{vlanname}}{{Prefix}} object 142.101.157.184 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group DM_INLINE_SERVICE_338 object {{vlanname}}{{Prefix}} object-group Osprey-PRD.EXT_Domain-Controller 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended permit object-group CyberArk_Access object {{vlanname}}{{Prefix}} object-group CyberArk_servers 
+access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
+access-list {{vlanname}}{{Prefix}} extended deny ip any any
+
+mtu {{vlanname}}_IC  1500
+
+access-group {{int_name}}_access_in in interface {{vlanname}}_IC 
+
+
+
+******************Config for Switch 2 (hsrp priority 80) is below**********************
+
+vrf context {{vlanname}}
+  ip route 0.0.0.0/0 {{IC_Prefix | ipaddr(-2)}} name {{vlanname}}_IC 
+  address-family ipv4 unicast
+    route-target import 65507:26008{{IC_VLAN_ID}}
+    route-target import 65507:260081501
+    route-target export 65507:26008{{IC_VLAN_ID}}
+    
+vrf context BACKUP_NET
+ address-family ipv4 unicast
+  route-target import 65507:26008{{IC_VLAN_ID}}
+
+vlan {{IC_VLAN_ID}}
+  name {{vlanname}}{{IC_Prefix}}
+  mode fabricpath
+
+vlan {{vlan_id}}
+  name {{vlanname}}{{Prefix}}
+  mode fabricpath
+
+
+interface Vlan{{IC_VLAN_ID}}
+  description {{vlanname}}{{IC_Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{IC_Prefix | ipaddr(3)}}
+  hsrp version 2
+  hsrp {{IC_VLAN_ID}} 
+    name {{vlanname}}_IC_HSRP
+    preempt 
+    priority 100
+    ip {{IC_Prefix | ipaddr(1)}}
+
+interface Vlan{{vlan_id}}
+  description {{vlanname}}{{Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{Prefix | ipaddr(3)}}
+  hsrp version 2
+  hsrp {{vlan_id}}
+    name {{Prefix | ipaddr(1)}}_name
+    preempt 
+    priority 100
+    ip {{Prefix | ipaddr(1)}}
+
+interface port-channel11
+  switchport trunk allowed vlan add {{vlan_id}}
+
+interface port-channel12
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel20
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel21
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel22
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel23
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+router bgp 65507
+
+ vrf {{vlanname}}
+    address-family ipv4 unicast
+
+
+*******************Config for Switch 3 (hsrp priority 90) is below**********************
+
+
+vrf context {{vlanname}}
+  ip route 0.0.0.0/0 {{IC_Prefix | ipaddr(-2)}} name {{vlanname}}_IC 
+  address-family ipv4 unicast
+    route-target import 65507:26008{{IC_VLAN_ID}}
+    route-target import 65507:260081501
+    route-target export 65507:26008{{IC_VLAN_ID}}
+    
+vrf context BACKUP_NET
+ address-family ipv4 unicast
+  route-target import 65507:26008{{IC_VLAN_ID}}
+
+vlan {{IC_VLAN_ID}}
+  name {{vlanname}}{{IC_Prefix}}
+  mode fabricpath
+
+vlan {{vlan_id}}
+  name {{vlanname}}{{Prefix}}
+  mode fabricpath
+
+interface Vlan{{IC_VLAN_ID}}
+  description {{vlanname}}{{IC_Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{IC_Prefix | ipaddr(4)}}
+  hsrp version 2
+  hsrp {{IC_VLAN_ID}} 
+    name {{vlanname}}_IC_HSRP
+    preempt 
+    priority 90
+    ip {{IC_Prefix | ipaddr(1)}}
+
+interface Vlan{{vlan_id}}
+  description {{vlanname}}{{Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{Prefix | ipaddr(4)}}
+  hsrp version 2
+  hsrp {{vlan_id}}
+    name {{Prefix | ipaddr(1)}}_name
+    preempt 
+    priority 90
+    ip {{Prefix | ipaddr(1)}}
+
+interface port-channel11
+  switchport trunk allowed vlan add {{vlan_id}}
+
+interface port-channel12
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel20
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel21
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel22
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel23
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+router bgp 65507
+
+ vrf {{vlanname}}
+    address-family ipv4 unicast
+
+
+
+*******************Config for Switch 4 (hsrp priority 100) is below**********************
+
+vrf context {{vlanname}}
+  ip route 0.0.0.0/0 {{IC_Prefix | ipaddr(-2)}} name {{vlanname}}_IC 
+  address-family ipv4 unicast
+    route-target import 65507:26008{{IC_VLAN_ID}}
+    route-target import 65507:260081501
+    route-target export 65507:26008{{IC_VLAN_ID}}
+    
+vrf context BACKUP_NET
+ address-family ipv4 unicast
+  route-target import 65507:26008{{IC_VLAN_ID}}
+
+vlan {{IC_VLAN_ID}}
+  name {{vlanname}}{{IC_Prefix}}
+  mode fabricpath
+
+vlan {{vlan_id}}
+  name {{vlanname}}{{Prefix}}
+  mode fabricpath
+
+interface Vlan{{IC_VLAN_ID}}
+  description {{vlanname}}{{IC_Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{IC_Prefix | ipaddr(5)}}
+  no ipv6 redirects
+  hsrp version 2
+  hsrp {{IC_VLAN_ID}} 
+    name {{vlanname}}_IC_HSRP
+    preempt 
+    priority 80
+    ip {{IC_Prefix | ipaddr(1)}}
+
+interface Vlan{{vlan_id}}
+  description {{vlanname}}{{Prefix}}
+  mtu 9216
+  vrf member {{vlanname}}
+  no ip redirects
+  ip address {{Prefix | ipaddr(5)}}
+  no ipv6 redirects
+  hsrp version 2
+  hsrp {{vlan_id}}
+    name {{Prefix | ipaddr(1)}}_name
+    preempt 
+    priority 80
+    ip {{Prefix | ipaddr(1)}}
+
+interface port-channel11
+  switchport trunk allowed vlan add {{vlan_id}}
+
+interface port-channel12
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel20
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel21
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel22
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+interface port-channel23
+  switchport trunk allowed vlan add {{IC_VLAN_ID}}
+
+router bgp 65507
+
+ vrf {{vlanname}}
+    address-family ipv4 unicast

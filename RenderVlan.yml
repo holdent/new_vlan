@@ -1,0 +1,13 @@
+---
+- include: vlan3004.yml
+- hosts: localhost
+  gather_facts: no
+  connection: local
+ # vars_files:
+ # - "vlan3004.yml"
+  tasks:
+  - template: src="fw_vlan_temp.j2" dest=/tmp/3004_firewall.txt
+  - template: src="Switch1_hsrp110.j2" dest=/tmp/3004_Switch1_hsrp110.txt
+  - template: src="Switch2_hsrp80.j2" dest=/temp/3004_Switch2_hsrp80.txt
+  - template: src="Switch3_hsrp90.j2" dest=/temp/3004_Switch3_hsrp90.txt
+  - template: src="Switch4_hsrp100.j2" dest=/tmp/3004_Switch4_hsrp100.txt
