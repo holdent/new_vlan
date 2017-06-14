@@ -2,52 +2,51 @@
 
 
 interace Port-channel7.{{IC_VLAN_ID}}
- description FW IC to {{vlanname}}{{IC_Prefix}}
+ description FW IC to {{vlanname}}_{{IC_Prefix}}
  vlan {{IC_VLAN_ID}}
  nameif {{vlanname}}_IC 
  security-level 100
- ip address {{IC_Prefix | ipaddr(-2)}} 255.255.255.240 secondary {{IC_Prefix | ipaddr(-3)}}
+ ip address {{IC_Prefix | ipaddr('-2')}} 255.255.255.240 secondary {{IC_Prefix | ipaddr('-3')}}
 
-object-group network {{vlanname}}{{Prefix}}
- subnet {{Prefix | ipaddr('address')}} {{Prefix | ipaddr('netmask')}}
+object-group network {{vlanname}}_{{Prefix | ipaddr('prefix')}} 
+ subnet {{ Prefix | ipaddr('address') }} {{Prefix | ipaddr('netmask')}}
  description {{CRQ}}
 
-route {{vlanname}}_IC  {{Prefix | ipaddr('address')}} {{Prefix | ipaddr('netmask')}} {{IC_Prefix | ipaddr(1)}}
+route {{vlanname}}_IC  {{Prefix | ipaddr('address')}} {{Prefix | ipaddr('netmask')}} {{IC_Prefix | ipaddr('1')}}
 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit icmp object {{vlanname}}{{Prefix}} object-group PING_Global_Networks 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group GIS-Network-Mgmt-Nets_SVCS object {{vlanname}}{{Prefix}} object-group GIS-Network-Mgmt-Nets 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group Tripwire_Servers object-group Tripwire_in 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit ip object {{vlanname}}{{Prefix}} object LUMETA_SENSOR 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit udp object {{vlanname}}{{Prefix}} object-group Security_Syslog_Servers eq syslog 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object TCP_1688 object {{vlanname}}{{Prefix}} object-group DM_INLINE_NETWORK_422 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group MTL-BMC-Patrol-OUT object {{vlanname}}{{Prefix}} object-group MTL-BMC-Patrol 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group DM_INLINE_SERVICE_337 object {{vlanname}}{{Prefix}} object-group DM_INLINE_NETWORK_423 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group MSS-ePO-AV object-group MSS-ePO-AV-OUT 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group DM_INLINE_NETWORK_424 object-group Symantec 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group Satellite_SVCS object {{vlanname}}{{Prefix}} object 10.232.80.8 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit tcp object {{vlanname}}{{Prefix}} object-group Websense_Servers object-group PAC_FILE 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group HIDS_MONITOR object {{vlanname}}{{Prefix}} object 142.101.157.184 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group DM_INLINE_SERVICE_338 object {{vlanname}}{{Prefix}} object-group Osprey-PRD.EXT_Domain-Controller 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended permit object-group CyberArk_Access object {{vlanname}}{{Prefix}} object-group CyberArk_servers 
-access-list {{vlanname}}{{Prefix}} remark {{CRQ}}
-access-list {{vlanname}}{{Prefix}} extended deny ip any any
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit icmp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group PING_Global_Networks 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group GIS-Network-Mgmt-Nets_SVCS object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group GIS-Network-Mgmt-Nets 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit tcp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group Tripwire_Servers object-group Tripwire_in 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit ip object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object LUMETA_SENSOR 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit udp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group Security_Syslog_Servers eq syslog 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object TCP_1688 object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group DM_INLINE_NETWORK_422 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group MTL-BMC-Patrol-OUT object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group MTL-BMC-Patrol 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group DM_INLINE_SERVICE_337 object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group DM_INLINE_NETWORK_423 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit tcp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group MSS-ePO-AV object-group MSS-ePO-AV-OUT 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit tcp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group DM_INLINE_NETWORK_424 object-group Symantec 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group Satellite_SVCS object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object 10.232.80.8 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit tcp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group Websense_Servers object-group PAC_FILE 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group HIDS_MONITOR object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object 142.101.157.184 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group DM_INLINE_SERVICE_338 object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group Osprey-PRD.EXT_Domain-Controller 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit object-group CyberArk_Access object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group CyberArk_servers 
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
+access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended deny ip any any
 
 mtu {{vlanname}}_IC  1500
 
-access-group {{vlanname}}_IC_access_in in interface {{vlanname}}_IC 
-
+access-group {{vlanname}}_IC_access_in in interface {{vlanname}}_IC
