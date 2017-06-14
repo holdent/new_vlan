@@ -6,13 +6,13 @@ interace Port-channel7.{{IC_VLAN_ID}}
  vlan {{IC_VLAN_ID}}
  nameif {{vlanname}}_IC 
  security-level 100
- ip address {{IC_Prefix | ipaddr('-2')}} 255.255.255.240 secondary {{IC_Prefix | ipaddr('-3')}}
+ ip address {{IC_Prefix | ipaddr('-2') | ipaddr('address')}} 255.255.255.240 secondary {{IC_Prefix | ipaddr('-3') | ipaddr('address')}}
 
 object-group network {{vlanname}}_{{Prefix | ipaddr('prefix')}} 
  subnet {{ Prefix | ipaddr('address') }} {{Prefix | ipaddr('netmask')}}
  description {{CRQ}}
 
-route {{vlanname}}_IC  {{Prefix | ipaddr('address')}} {{Prefix | ipaddr('netmask')}} {{IC_Prefix | ipaddr('1')}}
+route {{vlanname}}_IC  {{Prefix | ipaddr('network')}} {{Prefix | ipaddr('netmask')}} {{IC_Prefix | ipaddr('1') | ipaddr('address')}}
 
 access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} remark {{CRQ}}
 access-list {{vlanname}}_{{Prefix | ipaddr('prefix')}} extended permit icmp object {{vlanname}}_{{Prefix | ipaddr('prefix')}} object-group PING_Global_Networks 

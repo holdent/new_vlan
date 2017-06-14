@@ -1,7 +1,7 @@
 {# ****************Config for Switch 1 (hsrp priority 110) is below********************** #}
 
 vrf context {{vlanname}}
-  ip route 0.0.0.0/0 {{IC_Prefix | ipaddr(-2)}} name {{vlanname}}_IC 
+  ip route 0.0.0.0/0 {{IC_Prefix | ipaddr(-2) | ipaddr('address')}} name {{vlanname}}_IC 
   address-family ipv4 unicast
     route-target import 65507:26008{{IC_VLAN_ID}}
     route-target import 65507:260081501
@@ -12,16 +12,16 @@ vrf context BACKUP_NET
   route-target import 65507:26008{{IC_VLAN_ID}}
   
 vlan {{IC_VLAN_ID}}
-  name {{vlanname}}{{IC_Prefix}}
+  name {{vlanname}}_{{IC_Prefix}}
   mode fabricpath
 
 vlan {{vlan_id}}
-  name {{vlanname}}{{Prefix}}
+  name {{vlanname}}_{{Prefix | ipaddr('network')}}_{{Prefix | ipaddr('prefix')}}
   mode fabricpath
 
 
 interface Vlan{{IC_VLAN_ID}}
-  description {{vlanname}}{{IC_Prefix}}
+  description {{vlanname}}_{{IC_Prefix}}
   mtu 9216
   vrf member {{vlanname}}
   no ip redirects
@@ -34,7 +34,7 @@ interface Vlan{{IC_VLAN_ID}}
     ip {{IC_Prefix | ipaddr(1)}}
 
 interface Vlan{{vlan_id}}
-  description {{vlanname}}{{Prefix}}
+  description {{vlanname}}_{{Prefix}}
   mtu 9216
   vrf member {{vlanname}}
   no ip redirects

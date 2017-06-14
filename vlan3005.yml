@@ -7,7 +7,7 @@
 #
 # Save your file with the vlan_id in the file name ie...  vlan3004
 #
-# When running the RenderVlan.yml run with the variable vlan_id  ie...     RenderVlan.yml 3004
+# When running the RenderVlan.yml run with the variable vlan_id  ie...     RenderVlan.yml -e id=3004
 #
 IC_Prefix: 10.232.65.0/28
 IC_VLAN_ID: 1005
