@@ -16,11 +16,11 @@ vlan {{IC_VLAN_ID}}
   mode fabricpath
 
 vlan {{vlan_id}}
-  name {{vlanname}}_{{Prefix | ipaddr('network')}}_{{Prefix | ipaddr('prefix')}}
+  name {{vlanname}}_{{Prefix | ipaddr('0') | ipaddr('address')}}_{{Prefix | ipaddr('prefix')}}
   mode fabricpath
 
 interface Vlan{{IC_VLAN_ID}}
-  description {{vlanname}}_{{IC_Prefix}}
+  description {{vlanname}}_{{IC_Prefix | ipaddr('0')}}
   mtu 9216
   vrf member {{vlanname}}
   no ip redirects
@@ -34,7 +34,7 @@ interface Vlan{{IC_VLAN_ID}}
     ip {{IC_Prefix | ipaddr(1)}}
 
 interface Vlan{{vlan_id}}
-  description {{vlanname}}_{{Prefix}}
+  description {{vlanname}}_{{Prefix | ipaddr('0')}}
   mtu 9216
   vrf member {{vlanname}}
   no ip redirects

@@ -9,7 +9,7 @@ interace Port-channel7.{{IC_VLAN_ID}}
  ip address {{IC_Prefix | ipaddr('-2') | ipaddr('address')}} 255.255.255.240 secondary {{IC_Prefix | ipaddr('-3') | ipaddr('address')}}
 
 object-group network {{vlanname}}_{{Prefix | ipaddr('prefix')}} 
- subnet {{ Prefix | ipaddr('address') }} {{Prefix | ipaddr('netmask')}}
+ subnet {{ Prefix | ipaddr('0') }} {{Prefix | ipaddr('netmask')}}
  description {{CRQ}}
 
 route {{vlanname}}_IC  {{Prefix | ipaddr('network')}} {{Prefix | ipaddr('netmask')}} {{IC_Prefix | ipaddr('1') | ipaddr('address')}}

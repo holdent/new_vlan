@@ -9,9 +9,9 @@
 #
 # When running the RenderVlan.yml run with the variable vlan_id  ie...     RenderVlan.yml 3004
 #
-IC_Prefix: 10.232.65.0/28
+IC_Prefix: 10.232.65.5/28
 IC_VLAN_ID: 1004
-Prefix: 10.232.164.0/24
+Prefix: 10.232.164.25/24
 vlan_id: 3004
 vlanname: PRD_TEST1
 CRQ: 269304
