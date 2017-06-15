@@ -1,12 +1,13 @@
 ---
+# create the flowing dir on your localhost  /usr/local/bin/vlans/
 - hosts: localhost
   gather_facts: no
   connection: local
   vars_files:
   - "vlan{{id}}.yml"
   tasks:
-  - template: src="fw_vlan_temp.j2" dest=./tmp/{{id}}_firewall.txt
-  - template: src="Switch1_hsrp110.j2" dest=./tmp/{{id}}_Switch1_hsrp110.txt
-  - template: src="Switch2_hsrp80.j2" dest=./tmp/{{id}}_Switch2_hsrp80.txt
-  - template: src="Switch3_hsrp90.j2" dest=./tmp/{{id}}_Switch3_hsrp90.txt
-  - template: src="Switch4_hsrp100.j2" dest=./tmp/{{id}}_Switch4_hsrp100.txt
+  - template: src="fw_vlan_temp.j2" dest=/usr/local/bin/vlans/{{id}}_firewall.txt
+  - template: src="Switch1_hsrp110.j2" dest=/usr/local/bin/vlans/{{id}}_Switch1_hsrp110.txt
+  - template: src="Switch2_hsrp80.j2" dest=/usr/local/bin/vlans/{{id}}_Switch2_hsrp80.txt
+  - template: src="Switch3_hsrp90.j2" dest=/usr/local/bin/vlans/{{id}}_Switch3_hsrp90.txt
+  - template: src="Switch4_hsrp100.j2" dest=/usr/local/bin/vlans/{{id}}_Switch4_hsrp100.txt
